@@ -65,7 +65,7 @@ size_t read_folder(char* dir, dir_entry_t** entries, int include_hidden)
         free(namelist);
     }
     *entries = ents;
-    /*puts("reading folder finished");*/
+    puts("reading folder finished");
     return n;
 }
 
@@ -73,10 +73,12 @@ int main(int argc, char* argv[])
 {
     dir_entry_t* entries;
     size_t n = 0;
-    /*n = read_folder("/tmp", &entries, 0);*/
+
     if (argc == 2)
         n = read_folder(argv[1], &entries, 0);
     else if (argc == 1)
         n = read_folder(".", &entries, 0);
+    print_folder_contents_detailed(entries, n);
+
     return 0;
 }
