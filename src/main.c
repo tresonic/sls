@@ -65,7 +65,7 @@ size_t read_folder(char* dir, dir_entry_t** entries, int include_hidden)
         free(namelist);
     }
     *entries = ents;
-    puts("reading folder finished");
+    /*puts("reading folder finished");*/
     return n;
 }
 
