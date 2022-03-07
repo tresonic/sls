@@ -196,6 +196,12 @@ clean:
 	@$(RM) -r build
 	@$(RM) -r bin
 
+# run binary
+.PHONY: run
+run: debug
+	@echo "running $(BIN_NAME)"
+	./$(BIN_NAME)
+
 # Main rule, checks the executable and symlinks to the output
 all: $(BIN_PATH)/$(BIN_NAME)
 	@echo "Making symlink: $(BIN_NAME) -> $<"
