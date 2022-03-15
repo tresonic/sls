@@ -49,6 +49,7 @@ void print_folder_contents(dir_entry_t* entries, size_t n)
         printf("%s    ", entries[i].name);
     }
     set_default_color();
+    putchar('\n');
 }
 
 void outRWX(int perms, char* cR, char* cW, char* cX, char* c, char id)
@@ -103,8 +104,8 @@ void outPerms(mode_t perms)
         break;
     }
 
-    size_t setId = (((perms & 7000) - 344) / 512); /* I'm not sure if this is right but I don't know how to test it
-                (set UID bit | set-group-ID bit | sticky bit)*/
+    size_t setId = (((perms & 7000) - 344) / 512); /* I'm not sure if this is right but I
+   don't know how to test it (set UID bit | set-group-ID bit | sticky bit)*/
     /*printf("perms: %i\n", perms & 7000);*/
     /*if (setId > 3) {*/
     /*setId -= 4;*/

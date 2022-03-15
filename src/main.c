@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include "common_types.h"
 #include "print_routines.h"
@@ -27,58 +28,90 @@ int filter_discard_dirs(const struct dirent* dirent)
     return 1;
 }
 
-size_t read_folder(char* dir, dir_entry_t** entries, int include_hidden)
+size_t read_folder(char* dir, dir_entry_t** entries, int exclude_hidden)
 {
     struct dirent** namelist;
     int n;
 
     n = scandir(dir, &namelist, filter_discard_dirs, dir_alphasort);
-    dir_entry_t* ents = calloc(n, sizeof(dir_entry_t));
-    /*printf("reading folder - %i entries found\n", n);*/
-    /*printf("addr: %p\n", namelist[0]->d_name);*/
-    if (n < 0)
+    if (n < 0) {
         perror("scandir");
-    else {
-        for (int i = 0; i < n; i++) {
-            struct stat st;
-            char path[260];
-            path[0] = 0;
-            if (strlen(dir) > 1) {
-                strcpy(path, dir);
-                strcat(path, "/");
-            }
-            strcat(path, namelist[i]->d_name);
-            stat(path, &st);
-
-            char* name = malloc(strlen(namelist[i]->d_name) + 1);
-            strcpy(name, namelist[i]->d_name);
-            ents[i].name = name;
-
-            ents[i].perms = st.st_mode;
-            ents[i].size = st.st_size;
-            /*printf("size: %lu; %lu\n", st.st_size, ents[i].size);*/
-            /*printf("addr match: %p %p\n", namelist[i]->d_name, ents[i].name);*/
-
-            /*printf("name %i: %lu\n", i, ents[0].size);*/
-            free(namelist[i]);
-        }
-        free(namelist);
+        exit(1);
     }
+
+    int num_hidden = 0;
+    for (int i = 0; i < n; i++) {
+        if (namelist[i]->d_name[0] == '.' && exclude_hidden) {
+            num_hidden++;
+        }
+    }
+
+    dir_entry_t* ents = calloc(n - num_hidden, sizeof(dir_entry_t));
+    int entry_idx = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (namelist[i]->d_name[0] == '.' && exclude_hidden) {
+            free(namelist[i]);
+            continue;
+        }
+
+        struct stat st;
+        char path[260];
+        path[0] = 0;
+        if (strlen(dir) > 1) {
+            strcpy(path, dir);
+            strcat(path, "/");
+        }
+        strcat(path, namelist[i]->d_name);
+        stat(path, &st);
+
+        char* name = malloc(strlen(namelist[i]->d_name) + 1);
+        strcpy(name, namelist[i]->d_name);
+        ents[entry_idx].name = name;
+
+        ents[entry_idx].perms = st.st_mode;
+        ents[entry_idx].size = st.st_size;
+        entry_idx++;
+
+        free(namelist[i]);
+    }
+    free(namelist);
+
     *entries = ents;
-    /*puts("reading folder finished");*/
-    return n;
+    return n - num_hidden;
 }
 
 int main(int argc, char* argv[])
 {
     dir_entry_t* entries;
     size_t n = 0;
+    int opt = 0;
 
-    if (argc == 2)
-        n = read_folder(argv[1], &entries, 0);
-    else if (argc == 1)
-        n = read_folder(".", &entries, 0);
-    print_folder_contents_detailed(entries, n);
+    int exclude_hidden_files = 0;
+    int list_view = 0;
+
+    while ((opt = getopt(argc, argv, "le")) != -1) {
+        switch (opt) {
+        case 'l':
+            list_view = 1;
+            break;
+        case 'e':
+            exclude_hidden_files = 1;
+            break;
+        }
+    }
+
+    if (optind == argc) {
+        n = read_folder(".", &entries, exclude_hidden_files);
+    } else {
+        puts("reading specified folder");
+        n = read_folder(argv[argc - 1], &entries, 0);
+    }
+
+    if (list_view)
+        print_folder_contents_detailed(entries, n);
+    else
+        print_folder_contents(entries, n);
 
     return 0;
 }

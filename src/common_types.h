@@ -7,5 +7,4 @@ typedef struct {
     size_t size;
 } dir_entry_t;
 
-
 #endif
