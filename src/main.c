@@ -104,8 +104,7 @@ int main(int argc, char* argv[])
     if (optind == argc) {
         n = read_folder(".", &entries, exclude_hidden_files);
     } else {
-        puts("reading specified folder");
-        n = read_folder(argv[argc - 1], &entries, 0);
+        n = read_folder(argv[argc - 1], &entries, exclude_hidden_files);
     }
 
     if (list_view)
