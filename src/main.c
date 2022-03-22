@@ -51,7 +51,9 @@ size_t read_folder(char* dir, dir_entry_t** entries, int exclude_files)
 
     int num_hidden = 0;
     for (int i = 0; i < n; i++) {
-        if (exclude_files == 2 && namelist[i]->d_type != DT_DIR) {
+        if (exclude_files == 3 && (namelist[i]->d_type != DT_DIR || namelist[i]->d_name[0] == '.')) {
+            num_hidden++;
+        } else if (exclude_files == 2 && namelist[i]->d_type != DT_DIR) {
             num_hidden++;
         } else if (exclude_files == 1 && namelist[i]->d_name[0] == '.') {
             num_hidden++;
@@ -62,7 +64,10 @@ size_t read_folder(char* dir, dir_entry_t** entries, int exclude_files)
     int entry_idx = 0;
 
     for (int i = 0; i < n; i++) {
-        if (exclude_files == 2 && namelist[i]->d_type != DT_DIR) {
+        if (exclude_files == 3 && (namelist[i]->d_type != DT_DIR || namelist[i]->d_name[0] == '.')) {
+            free(namelist[i]);
+            continue;
+        } else if (exclude_files == 2 && namelist[i]->d_type != DT_DIR) {
             free(namelist[i]);
             continue;
         } else if (exclude_files == 1 && namelist[i]->d_name[0] == '.') {
@@ -115,10 +120,10 @@ int main(int argc, char* argv[])
             list_view = 1;
             break;
         case 'e':
-            exclude_files = 1;
+            exclude_files += 1;
             break;
         case 'D':
-            exclude_files = 2;
+            exclude_files += 2;
             break;
         default:
             printf("use -h to list known options\n");
