@@ -14,7 +14,6 @@ void set_entry_color(mode_t perms)
             printf("%s", LIGHT_RED);
         else
             printf("%s", LIGHT_GRAY);
-
         break;
     case S_IFBLK: /* block special file */
         printf("%s", WHITE);
