@@ -13,13 +13,13 @@ void set_entry_color(mode_t perms)
         if (perms & S_IEXEC)
             printf("%s", LIGHT_RED);
         else
-            printf("%s", LIGHT_GRAY);
+            printf("%s", DEFAULT_COLOR);
         break;
     case S_IFBLK: /* block special file */
-        printf("%s", WHITE);
+        printf("%s", DEFAULT_COLOR);
         break;
     case S_IFCHR: /* character special file */
-        printf("%s", WHITE);
+        printf("%s", DEFAULT_COLOR);
         break;
     case S_IFDIR: /* directory */
         printf("%s", LIGHT_GREEN);
@@ -28,13 +28,13 @@ void set_entry_color(mode_t perms)
         printf("%s", CYAN);
         break;
     case S_IFIFO: /* FIFO/pipe */
-        printf("%s", WHITE);
+        printf("%s", DEFAULT_COLOR);
         break;
     case S_IFSOCK: /* socket */
-        printf("%s", WHITE);
+        printf("%s", DEFAULT_COLOR);
         break;
     default: /* should be network? */
-        printf("%s", WHITE);
+        printf("%s", DEFAULT_COLOR);
         break;
     }
 }
@@ -78,13 +78,13 @@ void outPerms(mode_t perms)
 {
     switch (perms & S_IFMT) {
     case S_IFREG: /* file */
-        printf("%s.", WHITE);
+        printf("%s.", DEFAULT_COLOR);
         break;
     case S_IFBLK: /* block special file */
-        printf("%sb", WHITE);
+        printf("%sb", DEFAULT_COLOR);
         break;
     case S_IFCHR: /* character special file */
-        printf("%sc", WHITE);
+        printf("%sc", DEFAULT_COLOR);
         break;
     case S_IFDIR: /* directory */
         printf("%sd", BLUE);
@@ -93,13 +93,13 @@ void outPerms(mode_t perms)
         printf("%sl", CYAN);
         break;
     case S_IFIFO: /* FIFO/pipe */
-        printf("%sp", WHITE);
+        printf("%sp", DEFAULT_COLOR);
         break;
     case S_IFSOCK: /* socket */
-        printf("%ss", WHITE);
+        printf("%ss", DEFAULT_COLOR);
         break;
     default: /* should be network? */
-        printf("%sn", WHITE);
+        printf("%sn", DEFAULT_COLOR);
         break;
     }
 
@@ -111,7 +111,7 @@ void outPerms(mode_t perms)
     /*outRWX((perms & S_IRWXU) / 64, YELLOW, LIGHT_RED, LIGHT_RED, LIGHT_GRAY,
    * 's');*/
     /*} else {*/
-    outRWX((perms & S_IRWXU) / 64, YELLOW, LIGHT_RED, LIGHT_GREEN, LIGHT_GRAY,
+    outRWX((perms & S_IRWXU) / 64, YELLOW, LIGHT_RED, LIGHT_GREEN, DEFAULT_COLOR,
         'x');
     /*}*/
 
@@ -120,13 +120,13 @@ void outPerms(mode_t perms)
     /*outRWX((perms & S_IRWXG) / 8, LIGHT_GRAY, RED, LIGHT_RED, LIGHT_GRAY,
    * 's');*/
     /*} else {*/
-    outRWX((perms & S_IRWXG) / 8, LIGHT_GRAY, RED, GREEN, LIGHT_GRAY, 'x');
+    outRWX((perms & S_IRWXG) / 8, DEFAULT_COLOR, RED, GREEN, DEFAULT_COLOR, 'x');
     /*}*/
 
     /*if (setId) {*/
     /*outRWX(perms & S_IRWXO, LIGHT_GRAY, RED, LIGHT_PURPLE, LIGHT_GRAY, 't');*/
     /*} else {*/
-    outRWX(perms & S_IRWXO, LIGHT_GRAY, RED, GREEN, LIGHT_GRAY, 'x');
+    outRWX(perms & S_IRWXO, DEFAULT_COLOR, RED, GREEN, DEFAULT_COLOR, 'x');
     /*}*/
 }
 
