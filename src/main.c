@@ -78,7 +78,7 @@ size_t read_folder(char* dir, dir_entry_t** entries, int exclude_files)
         struct stat st;
         char path[260];
         path[0] = 0;
-        if (strlen(dir) > 1) {
+        if (strlen(dir) > 0) {
             strcpy(path, dir);
             strcat(path, "/");
         }
